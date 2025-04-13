@@ -8,12 +8,13 @@ bool is_running = false;
 
 bool initialize_window(void)
 {
-    SDL_Init(SDL_INIT_VIDEO);
-    window = SDL_CreateWindow(
-        NULL,
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOW_BORDERLESS);
+    if (!SDL_Init(SDL_INIT_VIDEO))
+    {
+        printf("SDL initialization failed: %s\n", SDL_GetError());
+        return false;
+    }
+
+    window = SDL_CreateWindow(NULL, 1280, 720, SDL_WINDOW_OPENGL);
 
     if (window == NULL)
     {
@@ -32,15 +33,39 @@ bool initialize_window(void)
     return true;
 }
 
-void setup(void) {}
+void setup(void)
+{
+    // TODO
+}
 
 void process_events(void)
 {
+    SDL_Event event;
+    SDL_PollEvent(&event);
+    switch (event.type)
+    {
+    case SDL_EVENT_QUIT:
+        is_running = false;
+        break;
+
+    case SDL_EVENT_KEY_DOWN:
+        if (event.key.key == SDLK_ESCAPE)
+            is_running = false;
+        break;
+    }
 }
 
-void update(void) {}
+void update(void)
+{
+    // TODO
+}
 
-void render(void) {}
+void render(void)
+{
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+}
 
 int main(void)
 {
